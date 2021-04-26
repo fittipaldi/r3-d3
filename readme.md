@@ -117,7 +117,7 @@ API Actions
     --data-urlencode 'armament[2][title]=Ion Cannons' \
     --data-urlencode 'armament[2][qtd]=22'
 
-##### DELETE /api/v1/spacecraft/delete/{id} - Delete Order by ID
+##### DELETE /api/v1/spacecraft/delete/{id} - Delete spacecraft by ID
 
     curl --location --request DELETE 'http://localhost:8000/api/v1/spacecraft/delete/1' \
     --header 'Authorization: Bearer JEDI-EHYJzdWIiOiJkZmRmc2RmZHMiLCJuYW1lIjP0'
