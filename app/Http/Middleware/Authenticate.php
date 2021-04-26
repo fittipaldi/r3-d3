@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 
 class Authenticate
 {
+
+    private $jediEndpoints = [
+        '/\/api\/v1\/spacecraft\/delete\/([0-9]+)/mi',
+        '/\/api\/v1\/spacecraft\/edit\/([0-9]+)/mi',
+        '/\/api\/v1\/spacecraft\/add/mi',
+        '/\/api\/v1\/spacecraft\/delete\/([0-9]+)/mi',
+    ];
+
     /**
      * The authentication guard factory instance.
      *
@@ -39,6 +47,7 @@ class Authenticate
         //Get token header bearer
         $token = $request->bearerToken();
 
+        $isJedi = false;
         if (!$token) {
             $unauthorized = true;
         } else {
@@ -47,6 +56,7 @@ class Authenticate
             $unauthorized = true;
             foreach ($Tokens as $tk) {
                 if ($tk->token == $token) {
+                    $isJedi = $tk->is_jedi;
                     $unauthorized = false;
                     break;
                 }
@@ -55,6 +65,17 @@ class Authenticate
 
         if ($unauthorized) {
             return response()->json(['message' => 'Unauthorized'], 401);
+        } else {
+            $isJediEndpoint = false;
+            foreach ($this->jediEndpoints as $reg) {
+                if (preg_match($reg, $request->getPathInfo())) {
+                    $isJediEndpoint = true;
+                    break;
+                }
+            }
+            if ($isJediEndpoint && !$isJedi) {
+                return response()->json(['message' => 'Unauthorized Only Jedi'], 401);
+            }
         }
         return $next($request);
     }
